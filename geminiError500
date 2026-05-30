@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied / System Error | INSO WAF</title>
+    <style>
+        /* ... 此处保留与之前 error_page_en.html 完全相同的 CSS 样式 ... */
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: #f3f3f3; color: #404040; display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; flex: 1; width: 100%; box-sizing: border-box; }
+        .header { margin-bottom: 40px; }
+        .error-code { font-size: 36px; font-weight: 300; color: #d92727; margin: 0 0 10px 0; }
+        .error-description { font-size: 24px; font-weight: 400; margin: 0; color: #595959; }
+        .content-box { background: #ffffff; border: 1px solid #d9d9d9; border-radius: 4px; padding: 30px; margin-bottom: 40px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+        h2 { font-size: 20px; font-weight: 600; margin-top: 0; margin-bottom: 15px; color: #1a1a1a; }
+        p { line-height: 1.6; margin-top: 0; margin-bottom: 15px; }
+        ul { padding-left: 20px; line-height: 1.6; }
+        li { margin-bottom: 8px; }
+        .action-btn { display: inline-block; background-color: #0051c3; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: 500; margin-top: 10px; }
+        .diagnostics { margin-top: 40px; border-top: 1px solid #e0e0e0; padding-top: 20px; font-family: monospace; font-size: 14px; color: #595959; display: flex; flex-wrap: wrap; gap: 20px; }
+        .diagnostic-item { display: flex; flex-direction: column; }
+        .diagnostic-label { font-size: 12px; color: #8c8c8c; text-transform: uppercase; margin-bottom: 4px; }
+        .footer { text-align: center; padding: 20px; font-size: 13px; color: #8c8c8c; background-color: #e8e8e8; }
+        /* 隐藏 Cloudflare 原生丑陋的错误注入框，但满足后台校验逻辑 */
+        .cf-hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="cf-hidden">
+        ::CLOUDFLARE_ERROR_500S_BOX::
+        ::CLOUDFLARE_ERROR_1000S_BOX::
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="error-code">Access Denied / Request Blocked</h1>
+            <h2 class="error-description">The web application firewall has blocked your request.</h2>
+        </div>
+
+        <div class="content-box">
+            <div class="grid">
+                <div>
+                    <h2>What happened?</h2>
+                    <p>Your request was blocked or could not be processed. This usually happens when the request violates a security rule, exhibits anomalous behavior, or encounters a server misconfiguration.</p>
+                </div>
+                <div>
+                    <h2>What can I do?</h2>
+                    <p>If you believe this is an error, please contact the site administrator with the diagnostic information below.</p>
+                    <a href="https://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=2_ri6e3t7ejs45uqqvW4tLY" class="action-btn">Report this issue</a>
+                </div>
+            </div>
+            
+            <div class="diagnostics">
+                <div class="diagnostic-item">
+                    <span class="diagnostic-label">Ray ID</span>
+                    <span>::RAY_ID::</span>
+                </div>
+                <div class="diagnostic-item">
+                    <span class="diagnostic-label">Your IP Address</span>
+                    <span>::CLIENT_IP::</span>
+                </div>
+                <div class="diagnostic-item">
+                    <span class="diagnostic-label">Location</span>
+                    <span>::GEO::</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">Protected by INSO WAF &copy; 2007 - Present</div>
+</body>
+</html>
