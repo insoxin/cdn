@@ -46,7 +46,7 @@ This repository now includes a complete set of HTTP error pages designed in the 
 ### Modern Cloudflare-Style Design
 - **Color Scheme**: Purple gradient background (#667eea to #764ba2)
 - **Layout**: Centered white container with shadow
-- **Typography**: Modern system fonts (San Francisco, Segoe UI, etc.)
+- **Typography**: Modern system fonts (-apple-system, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif)
 - **Icons**: Unicode emoji icons for visual communication
 
 ### Key Sections
