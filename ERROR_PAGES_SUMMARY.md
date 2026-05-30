@@ -76,11 +76,21 @@ Each page can be customized by modifying:
 
 ## Technical Details
 
-- **Format**: HTML5 with embedded CSS
+- **Format**: HTML5 with embedded CSS and JavaScript
 - **Language**: English
 - **Charset**: UTF-8
 - **Auto-refresh**: 360 seconds (6 minutes)
-- **Viewport**: Responsive design
+- **CSS Approach**: Embedded CSS (not external file)
+  - Error pages are self-contained for reliability
+  - Ensures pages display correctly even if CSS file serving is compromised
+  - Single file deployment simplifies administration
+- **JavaScript**: Dynamic timestamp generation on client-side
+- **Viewport**: Responsive design with media queries for mobile support
+- **Font Stack**: Modern system fonts for cross-platform compatibility
+
+## Design Approach Notes
+
+While common styles could theoretically be extracted to a separate CSS file for DRY principles, error pages intentionally use embedded CSS to ensure maximum reliability. Error pages may be displayed when the web server or application is experiencing issues, so having all styling embedded in each HTML file ensures they will render correctly regardless of file serving or CDN status.
 
 ## Usage
 
