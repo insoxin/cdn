@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -210,8 +210,8 @@ body {
         </div>
         
         <div class="error-actions">
-            <button class="btn btn-primary" onclick="location.href='/'">Go to Home</button>
-            <button class="btn btn-secondary" onclick="history.back()">Go Back</button>
+            <button class="btn btn-primary" id="homeBtn" aria-label="Return to home page">Go to Home</button>
+            <button class="btn btn-secondary" id="backBtn" aria-label="Go back to previous page">Go Back</button>
         </div>
         
         <div class="error-footer">
@@ -234,6 +234,21 @@ body {
         }
         
         document.getElementById('timestamp').textContent = formatTimestamp();
+        
+        // Add event listeners for buttons
+        const homeBtn = document.getElementById('homeBtn');
+        if (homeBtn) {
+            homeBtn.addEventListener('click', function() {
+                window.location.href = '/';
+            });
+        }
+        
+        const backBtn = document.getElementById('backBtn');
+        if (backBtn) {
+            backBtn.addEventListener('click', function() {
+                window.history.back();
+            });
+        }
     </script>
 </body>
 </html>
