@@ -216,12 +216,24 @@ body {
         
         <div class="error-footer">
             <p>If you believe this is a mistake, please <a href="mailto:support@example.com">contact support</a></p>
-            <p>Error ID: 500 | Time: %Y-%m-%d %H:%M:%S</p>
+            <p>Error ID: 500 | Time: <span id="timestamp"></span></p>
         </div>
     </div>
     
     <script>
-        // You can add analytics or other tracking here
+        // Generate current timestamp
+        function formatTimestamp() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
+        
+        document.getElementById('timestamp').textContent = formatTimestamp();
     </script>
 </body>
 </html>
