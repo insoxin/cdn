@@ -1,737 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cloudflare-Inspired Error Pages</title>
-  <meta name="description" content="A clean, Cloudflare-inspired error page template with multiple HTTP status presets." />
-  <style>
-    :root {
-      --bg: #f6f8fc;
-      --surface: rgba(255, 255, 255, 0.78);
-      --surface-strong: #ffffff;
-      --text: #10233f;
-      --muted: #5b6b84;
-      --line: rgba(16, 35, 63, 0.10);
-      --accent: #f6821f;
-      --accent-2: #2b7cff;
-      --success: #22c55e;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --shadow: 0 24px 70px rgba(16, 35, 63, 0.10);
-      --radius: 28px;
-    }
-
-    * { box-sizing: border-box; }
-
-    html, body {
-      margin: 0;
-      min-height: 100%;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at 10% 10%, rgba(43, 124, 255, 0.14), transparent 28%),
-        radial-gradient(circle at 90% 0%, rgba(246, 130, 31, 0.16), transparent 24%),
-        linear-gradient(180deg, #f9fbff 0%, #eef3fb 100%);
-    }
-
-    body {
-      display: grid;
-      place-items: center;
-      padding: 24px;
-    }
-
-    .wrap {
-      width: min(1180px, 100%);
-    }
-
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 18px;
-      padding: 8px 2px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-    }
-
-    .brand-mark {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--accent-2), #7c3aed);
-      box-shadow: 0 10px 24px rgba(43, 124, 255, 0.22);
-      position: relative;
-      flex: 0 0 auto;
-    }
-
-    .brand-mark::before,
-    .brand-mark::after {
-      content: "";
-      position: absolute;
-      inset: 11px;
-      border: 2px solid rgba(255,255,255,0.82);
-      border-left-color: transparent;
-      border-radius: 999px;
-      transform: rotate(15deg);
-    }
-
-    .brand-mark::after {
-      inset: 16px;
-      opacity: 0.75;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.7);
-      border: 1px solid var(--line);
-      color: var(--muted);
-      font-size: 14px;
-      backdrop-filter: blur(18px);
-    }
-
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--success);
-      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.16);
-    }
-
-    .card {
-      background: var(--surface);
-      backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .shell {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      min-height: 760px;
-    }
-
-    .hero {
-      padding: 48px;
-      background:
-        radial-gradient(circle at top right, rgba(246,130,31,0.11), transparent 32%),
-        radial-gradient(circle at bottom left, rgba(43,124,255,0.10), transparent 28%),
-        linear-gradient(180deg, rgba(255,255,255,0.9), rgba(249,251,255,0.84));
-      border-right: 1px solid var(--line);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 28px;
-    }
-
-    .eyebrow {
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--muted);
-      margin-bottom: 14px;
-    }
-
-    .status-code {
-      font-size: clamp(76px, 11vw, 138px);
-      line-height: 0.92;
-      margin: 0;
-      letter-spacing: -0.06em;
-      color: #0d213d;
-    }
-
-    .title {
-      margin: 10px 0 12px;
-      font-size: clamp(30px, 3.5vw, 54px);
-      line-height: 1.02;
-      letter-spacing: -0.04em;
-    }
-
-    .desc {
-      font-size: 18px;
-      line-height: 1.7;
-      color: var(--muted);
-      max-width: 62ch;
-      margin: 0;
-    }
-
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 24px;
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.84);
-      border: 1px solid var(--line);
-      color: var(--text);
-      font-size: 14px;
-      box-shadow: 0 8px 20px rgba(16, 35, 63, 0.04);
-    }
-
-    .chip strong {
-      font-weight: 700;
-    }
-
-    .hero-footer {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-    }
-
-    .mini {
-      padding: 16px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.78);
-      border: 1px solid var(--line);
-    }
-
-    .mini .label {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-
-    .mini .value {
-      font-size: 16px;
-      font-weight: 650;
-      line-height: 1.45;
-      color: var(--text);
-      word-break: break-word;
-    }
-
-    .side {
-      padding: 26px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-      background: rgba(255,255,255,0.65);
-    }
-
-    .panel {
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      background: rgba(255,255,255,0.84);
-      padding: 18px;
-    }
-
-    .panel h2 {
-      margin: 0 0 12px;
-      font-size: 16px;
-      letter-spacing: -0.02em;
-    }
-
-    .select-row,
-    .btn-row {
-      display: grid;
-      gap: 10px;
-    }
-
-    .select-row {
-      grid-template-columns: 1fr auto;
-      align-items: center;
-    }
-
-    select, button, input {
-      font: inherit;
-    }
-
-    select {
-      width: 100%;
-      border-radius: 16px;
-      border: 1px solid rgba(16, 35, 63, 0.14);
-      padding: 13px 14px;
-      background: #fff;
-      color: var(--text);
-      outline: none;
-    }
-
-    .button {
-      border: none;
-      border-radius: 16px;
-      padding: 13px 16px;
-      cursor: pointer;
-      transition: transform 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease;
-      font-weight: 650;
-    }
-
-    .button:hover { transform: translateY(-1px); }
-    .button:active { transform: translateY(0); opacity: 0.92; }
-
-    .button.primary {
-      color: #fff;
-      background: linear-gradient(135deg, var(--accent-2), #1c5fe0);
-      box-shadow: 0 14px 24px rgba(43, 124, 255, 0.22);
-    }
-
-    .button.secondary {
-      background: #eef4ff;
-      color: #1d4ed8;
-      border: 1px solid rgba(43, 124, 255, 0.14);
-    }
-
-    .button.ghost {
-      background: #fff;
-      border: 1px solid rgba(16, 35, 63, 0.12);
-      color: var(--text);
-    }
-
-    .kv {
-      display: grid;
-      gap: 12px;
-    }
-
-    .kv-item {
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(16, 35, 63, 0.08);
-      font-size: 14px;
-    }
-
-    .kv-item:last-child { border-bottom: 0; padding-bottom: 0; }
-
-    .kv-item span:first-child {
-      color: var(--muted);
-      flex: 0 0 auto;
-    }
-
-    .kv-item span:last-child {
-      text-align: right;
-      color: var(--text);
-      font-weight: 600;
-      overflow-wrap: anywhere;
-    }
-
-    .list {
-      margin: 0;
-      padding-left: 18px;
-      color: var(--text);
-      line-height: 1.7;
-    }
-
-    .footer-note {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 650;
-      color: #1d4ed8;
-      background: rgba(43, 124, 255, 0.10);
-      width: fit-content;
-    }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 0 4px rgba(246, 130, 31, 0.16);
-    }
-
-    .code-line {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 12px;
-      border-radius: 14px;
-      background: #0f1e35;
-      color: #dce8ff;
-      font-size: 13px;
-      letter-spacing: 0.01em;
-      overflow: auto;
-    }
-
-    .code-line code {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 12px;
-      color: #fff;
-    }
-
-    @media (max-width: 980px) {
-      body { padding: 16px; }
-      .shell { grid-template-columns: 1fr; }
-      .hero { border-right: 0; border-bottom: 1px solid var(--line); }
-      .hero-footer { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 640px) {
-      .hero, .side { padding: 20px; }
-      .topbar { flex-direction: column; align-items: flex-start; }
-      .select-row { grid-template-columns: 1fr; }
-      .title { line-height: 1.08; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Edge Security Page</title>
+<style>
+:root{
+--bg:#0f172a;--card:rgba(255,255,255,.08);--text:#fff;--muted:#cbd5e1;
+--accent:#f38020;--border:rgba(255,255,255,.12)
+}
+body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--text);
+background:linear-gradient(135deg,#0f172a,#1e293b,#111827);min-height:100vh;
+display:flex;align-items:center;justify-content:center;padding:20px}
+.card{max-width:980px;width:100%;background:var(--card);backdrop-filter:blur(20px);
+border:1px solid var(--border);border-radius:24px;padding:40px;box-sizing:border-box}
+.logo{color:var(--accent);font-weight:700;font-size:28px}
+.code{font-size:88px;font-weight:800;margin:10px 0}
+.sub{color:var(--accent);font-weight:600}
+.desc{color:var(--muted);line-height:1.7}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:24px}
+.box{background:rgba(255,255,255,.05);padding:14px;border-radius:14px}
+.label{font-size:12px;color:#94a3b8;text-transform:uppercase}
+.value{margin-top:6px}
+.challenge{margin-top:24px;padding:18px;background:rgba(255,255,255,.05);border-radius:14px}
+button{background:var(--accent);border:0;color:white;padding:12px 20px;border-radius:12px;cursor:pointer}
+.timer{font-size:28px;font-weight:700;color:var(--accent)}
+.footer{margin-top:25px;color:#94a3b8;font-size:13px}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <div class="brand" aria-label="Brand">
-        <div class="brand-mark" aria-hidden="true"></div>
-        <div>
-          <div style="font-size:15px;">Edge Error Studio</div>
-          <div style="font-size:12px;color:var(--muted);font-weight:500;">Cloudflare-inspired, fully editable</div>
-        </div>
-      </div>
-      <div class="pill"><span class="dot"></span><span id="pillText">Global delivery is active</span></div>
-    </div>
+<div class="card">
+<div class="logo">Edge Protection</div>
+<div class="sub" id="subtitle"></div>
+<div class="code" id="status"></div>
+<h1 id="title"></h1>
+<p class="desc" id="desc"></p>
 
-    <main class="card shell">
-      <section class="hero">
-        <div>
-          <div class="eyebrow" id="eyebrow">HTTP ERROR</div>
-          <h1 class="status-code" id="statusCode">500</h1>
-          <h2 class="title" id="title">Internal Server Error</h2>
-          <p class="desc" id="description">
-            The server encountered an unexpected condition and could not complete your request.
-          </p>
-          <div class="chips" id="chips">
-            <div class="chip"><strong>Ray ID:</strong> <span id="rayId">8f2a1c4f1b7c9d02</span></div>
-            <div class="chip"><strong>Client IP:</strong> <span id="clientIp">203.0.113.24</span></div>
-            <div class="chip"><strong>Datacenter:</strong> <span id="geo">NRT</span></div>
-          </div>
-        </div>
+<div id="special"></div>
 
-        <div class="hero-footer">
-          <div class="mini">
-            <div class="label">What happened</div>
-            <div class="value" id="whatHappened">A failure occurred while the origin or edge service processed the request.</div>
-          </div>
-          <div class="mini">
-            <div class="label">What to try</div>
-            <div class="value" id="whatToTry">Refresh the page. If the issue persists, contact the site owner with the Ray ID.</div>
-          </div>
-          <div class="mini">
-            <div class="label">Support hint</div>
-            <div class="value" id="supportHint">Keep the page open and provide a screenshot plus the time of the error.</div>
-          </div>
-        </div>
-      </section>
+<div class="grid">
+<div class="box"><div class="label">Ray ID</div><div class="value" id="ray"></div></div>
+<div class="box"><div class="label">Client IP</div><div class="value">203.0.113.10</div></div>
+<div class="box"><div class="label">Country</div><div class="value">KR</div></div>
+<div class="box"><div class="label">Timestamp</div><div class="value" id="ts"></div></div>
+</div>
 
-      <aside class="side">
-        <div class="panel">
-          <h2>Choose an error preset</h2>
-          <div class="select-row">
-            <select id="presetSelect" aria-label="Error preset"></select>
-            <button class="button secondary" id="copyButton" type="button">Copy details</button>
-          </div>
-        </div>
+<div class="footer">Custom security page • Cloudflare-inspired design</div>
+</div>
 
-        <div class="panel">
-          <h2>Status snapshot</h2>
-          <div class="kv">
-            <div class="kv-item"><span>HTTP status</span><span id="kvStatus">500</span></div>
-            <div class="kv-item"><span>Short label</span><span id="kvLabel">Internal Server Error</span></div>
-            <div class="kv-item"><span>Suggested action</span><span id="kvAction">Check origin logs</span></div>
-            <div class="kv-item"><span>Incident class</span><span id="kvClass">Origin failure</span></div>
-          </div>
-        </div>
+<script>
+const pages={
+waf:["403","WAF Block","Access Denied","Your request was blocked by a Web Application Firewall rule."],
+ipblock:["403","IP/Country Block","Access Restricted","Access from your IP address or region is restricted."],
+ipchallenge:["403","IP/Country Challenge","Verification Required","Additional verification is required before access is granted."],
+interactive:["403","Interactive Challenge","Human Verification","Please verify that you are a human visitor."],
+managed:["403","Managed Challenge","Checking Your Browser","Your browser is being checked before access is granted."],
+jschallenge:["403","Non‑Interactive Challenge","Security Check","Automatic browser verification is in progress."],
+ratelimit:["429","Rate Limit","Too Many Requests","You have exceeded the allowed request rate."],
+e500:["500","500 Class Error","Server Error","The origin server failed to process the request."],
+e1000:["1000","1000 Class Error","Configuration Error","A DNS or configuration issue prevented completion of the request."]
+};
 
-        <div class="panel">
-          <h2>Editable notes</h2>
-          <ul class="list" id="notesList"></ul>
-        </div>
+const p=new URLSearchParams(location.search);
+const mode=p.get("mode")||"managed";
+const d=pages[mode]||pages.managed;
 
-        <div class="panel">
-          <h2>Implementation notes</h2>
-          <div class="footer-note">
-            Use this as a standalone template or place it behind your app/router. Change the preset list, wording, logo, and links to match your brand.
-          </div>
-          <div style="margin-top:12px;" class="code-line">
-            <span>Example:</span> <code>?code=404</code>
-          </div>
-        </div>
-      </aside>
-    </main>
-  </div>
+status.textContent=d[0];
+subtitle.textContent=d[1];
+title.textContent=d[2];
+desc.textContent=d[3];
 
-  <script>
-    const presets = {
-      400: {
-        label: "Bad Request",
-        eyebrow: "HTTP ERROR",
-        desc: "The request could not be understood by the server due to malformed syntax.",
-        happened: "The request was invalid or could not be parsed correctly.",
-        try: "Check the URL, query parameters, and request payload.",
-        hint: "Review client-side validation before retrying.",
-        action: "Validate request format",
-        class: "Client error",
-        notes: ["Verify URL encoding.", "Inspect headers and body size.", "Try sending a simplified request first."],
-        pill: "Client request rejected"
-      },
-      401: {
-        label: "Unauthorized",
-        eyebrow: "ACCESS CONTROL",
-        desc: "Authentication is required and either missing or invalid.",
-        happened: "The request did not include valid credentials.",
-        try: "Sign in again or refresh the access token.",
-        hint: "Confirm that the bearer token, session, or API key is still valid.",
-        action: "Re-authenticate",
-        class: "Auth failure",
-        notes: ["Check token expiry.", "Confirm the correct account or tenant.", "Ensure the Authorization header is present."],
-        pill: "Authentication required"
-      },
-      403: {
-        label: "Forbidden",
-        eyebrow: "ACCESS CONTROL",
-        desc: "The server understood the request, but it refuses to authorize it.",
-        happened: "Your permissions do not allow access to this resource.",
-        try: "Request access or verify your role and IP allowlist.",
-        hint: "This is usually a policy or authorization rule, not a network issue.",
-        action: "Review permissions",
-        class: "Authorization failure",
-        notes: ["Check role-based access rules.", "Confirm the resource path is correct.", "Review WAF or firewall rules if applicable."],
-        pill: "Permission denied"
-      },
-      404: {
-        label: "Not Found",
-        eyebrow: "ROUTING ERROR",
-        desc: "The requested resource could not be found on this server.",
-        happened: "The path does not map to any available content.",
-        try: "Check the link or return to the previous page.",
-        hint: "If the page used to exist, confirm the route or file name.",
-        action: "Verify the route",
-        class: "Missing resource",
-        notes: ["Check for typos in the URL.", "Confirm the page has not been moved.", "Add a redirect if the route changed."],
-        pill: "Page not found"
-      },
-      405: {
-        label: "Method Not Allowed",
-        eyebrow: "REQUEST METHOD",
-        desc: "The request method is not supported for the target resource.",
-        happened: "The endpoint exists, but not for this HTTP method.",
-        try: "Use the supported method or update the route handler.",
-        hint: "Common fix: align GET, POST, PUT, PATCH, or DELETE handling.",
-        action: "Match the method",
-        class: "Routing policy",
-        notes: ["Check API documentation.", "Confirm the route supports the method.", "Return an Allow header when relevant."],
-        pill: "Unsupported method"
-      },
-      408: {
-        label: "Request Timeout",
-        eyebrow: "TIMEOUT",
-        desc: "The server timed out waiting for the request to finish.",
-        happened: "The client did not complete the request fast enough.",
-        try: "Retry the request or reduce payload size.",
-        hint: "Long uploads, slow clients, or upstream latency can cause this.",
-        action: "Retry or optimize",
-        class: "Timeout",
-        notes: ["Check connection stability.", "Review proxy and origin timeout settings.", "Reduce request complexity or size."],
-        pill: "Request timed out"
-      },
-      413: {
-        label: "Payload Too Large",
-        eyebrow: "REQUEST SIZE",
-        desc: "The request is larger than the server is willing or able to process.",
-        happened: "The uploaded body or file exceeded the configured limit.",
-        try: "Compress the payload or increase the accepted size limit.",
-        hint: "This often appears with large file uploads or JSON payloads.",
-        action: "Reduce payload size",
-        class: "Size limit",
-        notes: ["Check upload limits.", "Split large files into smaller chunks.", "Validate body size on the client."],
-        pill: "Payload rejected"
-      },
-      422: {
-        label: "Unprocessable Content",
-        eyebrow: "VALIDATION",
-        desc: "The request was syntactically correct, but semantically invalid.",
-        happened: "The server could not process the submitted data.",
-        try: "Correct the submitted fields and try again.",
-        hint: "Usually caused by validation rules, missing fields, or bad values.",
-        action: "Fix validation errors",
-        class: "Content validation",
-        notes: ["Inspect field-level validation messages.", "Check required inputs.", "Confirm data types and ranges."],
-        pill: "Validation failed"
-      },
-      429: {
-        label: "Too Many Requests",
-        eyebrow: "RATE LIMIT",
-        desc: "You have sent too many requests in a given amount of time.",
-        happened: "A throttling rule temporarily blocked additional requests.",
-        try: "Wait a moment and retry with a lower request rate.",
-        hint: "Use backoff, caching, or batching to reduce traffic bursts.",
-        action: "Slow down traffic",
-        class: "Throttle",
-        notes: ["Check rate-limit headers.", "Add retries with exponential backoff.", "Reduce request frequency."],
-        pill: "Rate limited"
-      },
-      500: {
-        label: "Internal Server Error",
-        eyebrow: "ORIGIN FAILURE",
-        desc: "The server encountered an unexpected condition that prevented it from fulfilling the request.",
-        happened: "An unhandled error occurred in the application or origin service.",
-        try: "Refresh the page. If the error repeats, review logs and recent changes.",
-        hint: "Check application exceptions, upstream health, and configuration changes.",
-        action: "Check origin logs",
-        class: "Origin failure",
-        notes: ["Inspect application logs.", "Verify recent deploys.", "Check dependencies, timeouts, and database connectivity."],
-        pill: "Server error"
-      },
-      501: {
-        label: "Not Implemented",
-        eyebrow: "FEATURE GAP",
-        desc: "The server does not support the functionality required to fulfill the request.",
-        happened: "The requested method or feature has not been implemented.",
-        try: "Use a supported endpoint or add the missing implementation.",
-        hint: "This is typically a server capability issue, not a user mistake.",
-        action: "Implement support",
-        class: "Capability gap",
-        notes: ["Review server features.", "Document unsupported endpoints.", "Return a clearer error message where possible."],
-        pill: "Not implemented"
-      },
-      502: {
-        label: "Bad Gateway",
-        eyebrow: "UPSTREAM ERROR",
-        desc: "The server received an invalid response from an upstream server.",
-        happened: "A proxy or edge service could not get a valid response from origin.",
-        try: "Check upstream health, DNS, and proxy settings.",
-        hint: "Common causes include origin downtime, protocol mismatch, or network issues.",
-        action: "Check upstream service",
-        class: "Gateway failure",
-        notes: ["Verify the origin is healthy.", "Inspect proxy logs.", "Confirm TLS and protocol compatibility."],
-        pill: "Gateway error"
-      },
-      503: {
-        label: "Service Unavailable",
-        eyebrow: "AVAILABILITY",
-        desc: "The server is temporarily unable to handle the request.",
-        happened: "The service is overloaded, down for maintenance, or temporarily unavailable.",
-        try: "Retry after a short delay.",
-        hint: "This often resolves when capacity or maintenance completes.",
-        action: "Retry later",
-        class: "Temporary outage",
-        notes: ["Check maintenance windows.", "Monitor service health.", "Scale capacity if traffic is high."],
-        pill: "Service unavailable"
-      },
-      504: {
-        label: "Gateway Timeout",
-        eyebrow: "UPSTREAM TIMEOUT",
-        desc: "The server did not receive a timely response from an upstream server.",
-        happened: "An upstream dependency took too long to respond.",
-        try: "Retry the request and inspect upstream latency.",
-        hint: "Increase timeout thresholds only after confirming the dependency is healthy.",
-        action: "Investigate upstream latency",
-        class: "Timeout",
-        notes: ["Check origin response times.", "Review proxy timeout settings.", "Look for slow database or API calls."],
-        pill: "Upstream timeout"
-      }
-    };
+ray.textContent=Math.random().toString(16).slice(2)+Math.random().toString(16).slice(2);
+ts.textContent=new Date().toUTCString();
 
-    const select = document.getElementById('presetSelect');
-    const statusCode = document.getElementById('statusCode');
-    const title = document.getElementById('title');
-    const description = document.getElementById('description');
-    const eyebrow = document.getElementById('eyebrow');
-    const whatHappened = document.getElementById('whatHappened');
-    const whatToTry = document.getElementById('whatToTry');
-    const supportHint = document.getElementById('supportHint');
-    const kvStatus = document.getElementById('kvStatus');
-    const kvLabel = document.getElementById('kvLabel');
-    const kvAction = document.getElementById('kvAction');
-    const kvClass = document.getElementById('kvClass');
-    const notesList = document.getElementById('notesList');
-    const rayId = document.getElementById('rayId');
-    const clientIp = document.getElementById('clientIp');
-    const geo = document.getElementById('geo');
-    const pillText = document.getElementById('pillText');
-    const copyButton = document.getElementById('copyButton');
+if(mode==="managed"){
+special.innerHTML=`<div class="challenge">
+<p>This process is automatic. Estimated wait time:</p>
+<div class="timer" id="timer">5</div>
+</div>`;
+let s=5;
+setInterval(()=>{
+s--;
+const t=document.getElementById('timer');
+if(t)t.textContent=s;
+if(s<=0) location.reload();
+},1000);
+}
 
-    const presetIds = Object.keys(presets).map(Number).sort((a, b) => a - b);
+if(mode==="interactive"){
+special.innerHTML=`<div class="challenge">
+<p><input type="checkbox" id="v"> <label for="v">Verify that you are human</label></p>
+<button onclick="alert('Verification successful')">Continue</button>
+</div>`;
+}
 
-    for (const code of presetIds) {
-      const option = document.createElement('option');
-      option.value = code;
-      option.textContent = `${code} — ${presets[code].label}`;
-      select.appendChild(option);
-    }
+if(mode==="jschallenge"){
+special.innerHTML=`<div class="challenge">
+Automatic browser verification is running...
+</div>`;
+}
 
-    function randomHex(len = 16) {
-      const chars = 'abcdef0123456789';
-      let out = '';
-      for (let i = 0; i < len; i++) out += chars[Math.floor(Math.random() * chars.length)];
-      return out;
-    }
-
-    function randomIp() {
-      return `203.0.113.${Math.floor(10 + Math.random() * 200)}`;
-    }
-
-    function updatePage(code) {
-      const data = presets[code] || presets[500];
-      select.value = String(code);
-      statusCode.textContent = String(code);
-      title.textContent = data.label;
-      description.textContent = data.desc;
-      eyebrow.textContent = data.eyebrow;
-      whatHappened.textContent = data.happened;
-      whatToTry.textContent = data.try;
-      supportHint.textContent = data.hint;
-      kvStatus.textContent = String(code);
-      kvLabel.textContent = data.label;
-      kvAction.textContent = data.action;
-      kvClass.textContent = data.class;
-      pillText.textContent = data.pill;
-      rayId.textContent = randomHex(16);
-      clientIp.textContent = randomIp();
-      geo.textContent = ['NRT', 'HKG', 'ICN', 'SFO', 'FRA'][Math.floor(Math.random() * 5)];
-      notesList.innerHTML = data.notes.map(item => `<li>${item}</li>`).join('');
-      const url = new URL(window.location.href);
-      url.searchParams.set('code', String(code));
-      window.history.replaceState({}, '', url);
-    }
-
-    select.addEventListener('change', () => updatePage(Number(select.value)));
-
-    copyButton.addEventListener('click', async () => {
-      const code = Number(select.value || 500);
-      const payload = [
-        `HTTP ${code} — ${presets[code].label}`,
-        `Ray ID: ${rayId.textContent}`,
-        `Client IP: ${clientIp.textContent}`,
-        `Datacenter: ${geo.textContent}`
-      ].join('\n');
-
-      try {
-        await navigator.clipboard.writeText(payload);
-        copyButton.textContent = 'Copied';
-        setTimeout(() => (copyButton.textContent = 'Copy details'), 1200);
-      } catch {
-        alert(payload);
-      }
-    });
-
-    const initialCode = Number(new URLSearchParams(window.location.search).get('code')) || 500;
-    updatePage(presets[initialCode] ? initialCode : 500);
-  </script>
+if(mode==="e1000"){
+const ec=p.get("code")||"1020";
+desc.textContent="Cloud configuration error code: "+ec;
+}
+</script>
 </body>
 </html>
